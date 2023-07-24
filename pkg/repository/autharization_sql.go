@@ -28,7 +28,7 @@ func (a *Active) Scan(value interface{}) error {
 type User struct {
 	ID            int    `db:"id" json:"id"`
 	Name          string `db:"name" json:"name"`
-	TelegramID    string `db:"telegram_id" json:"telegram_id"`
+	TelegramID    int64  `db:"telegram_id" json:"telegram_id"`
 	TelegramAlias string `db:"telegram_alias" json:"telegram_alias"`
 	IntraName     string `db:"intra_name" json:"intra_name"`
 	Active        Active `db:"active" json:"active"`

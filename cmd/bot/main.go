@@ -10,21 +10,14 @@ import (
 )
 
 func main() {
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./configs")
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("../../configs")
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Println(err)
+	if err := initConfig(); err != nil {
+		log.Fatal(err)
 	}
 	bot, err := tgbotapi.NewBotAPI(viper.GetString("tg.token"))
 	if err != nil {
 		log.Panic(err)
 	}
 
-	log.Println(viper.GetString("db.host"))
 	db, err := repository.NewMySqlDB(repository.Config{
 		Host:     viper.GetString("db.host"),
 		Port:     viper.GetString("db.port"),
@@ -49,4 +42,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+}
+
+func initConfig() error {
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath("./configs")
+	viper.AddConfigPath("../../configs") // Для дебага в VS Cpde
+	return viper.ReadInConfig()
 }
