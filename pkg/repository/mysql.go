@@ -15,6 +15,15 @@ type Config struct {
 	DBName   string
 }
 
+const (
+	usersTable        = "users"
+	citiesTable       = "cities"
+	eagerPeersTable   = "eager_peers"
+	randomGroupsTable = "random_groups"
+	reportsTable      = "reports"
+	userRole          = "user_role"
+)
+
 func NewMySqlDB(conf Config) (*sqlx.DB, error) {
 	db, err := sqlx.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName))
 	if err != nil {

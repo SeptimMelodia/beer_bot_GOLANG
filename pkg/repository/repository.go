@@ -6,6 +6,8 @@ import (
 )
 
 type Authorization interface {
+	CreateUser(user User) (int, error)
+	GetUser(telegramId string) (User, error)
 }
 
 type TodoList interface {
@@ -21,5 +23,7 @@ type Repository struct {
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
-	return &Repository{}
+	return &Repository{
+		Authorization: NewAuth(db),
+	}
 }

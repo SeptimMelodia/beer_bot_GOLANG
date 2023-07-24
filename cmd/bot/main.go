@@ -10,18 +10,20 @@ import (
 )
 
 func main() {
-	bot, err := tgbotapi.NewBotAPI("5837562265:AAFJYENJh2I0QzZDO9hs2YBKIkzOG-vqBrA")
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath("./configs")
+	viper.AddConfigPath(".")
+	viper.AddConfigPath("../../configs")
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Println(err)
+	}
+	bot, err := tgbotapi.NewBotAPI(viper.GetString("tg.token"))
 	if err != nil {
 		log.Panic(err)
 	}
 
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./configs")
-	err = viper.ReadInConfig()
-	if err != nil {
-		log.Println(err)
-	}
 	log.Println(viper.GetString("db.host"))
 	db, err := repository.NewMySqlDB(repository.Config{
 		Host:     viper.GetString("db.host"),
@@ -33,7 +35,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to initiaslize db: %s", err.Error())
 	}
-	repository.NewRepository(db)
+	rep := repository.NewRepository(db)
+	user, err := rep.Authorization.GetUser("505780494")
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("User is name %s found.\n", user.Name)
 
 	bot.Debug = true
 
